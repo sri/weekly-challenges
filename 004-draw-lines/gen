@@ -1,0 +1,5 @@
+#!/bin/bash
+for i in 1 2 3 4 5; do
+  echo creating 0$i.ppm...
+  ruby draw-lines.rb > 0$i.ppm
+done

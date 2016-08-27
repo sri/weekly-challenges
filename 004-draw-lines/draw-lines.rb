@@ -36,12 +36,10 @@ class Image
   attr_accessor :pixels, :width, :height
 
   def initialize(width, height)
-    @width = width
+    @width  = width
     @height = height
-
-    @pixels = (0...height).map do |i|
-      (0...width).map { |j| Pixel.new }
-    end
+    @pixels =
+      (0...height).map { (0...width).map { Pixel.new } }
   end
 
   def random_point
@@ -114,7 +112,7 @@ class PPM
     out.puts "#{image.width} #{image.height}"
     out.puts "255"
 
-    @image.each_row do |pixels|
+    image.each_row do |pixels|
       puts pixels.map(&:to_s).join('   ')
     end
   end
