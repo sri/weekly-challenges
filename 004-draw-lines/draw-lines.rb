@@ -131,39 +131,5 @@ def main
 end
 
 if $0 == __FILE__
-  # Can't use an option like "-t" --
-  # otherwise, minitest will try to interpret it
-  # and will die with an "invalid option" error.
-  run_tests = "run-tests" == ARGV[0]
-
-  if !run_tests
-    main
-    exit 0
-  end
-
-  require 'minitest/autorun'
-  require 'stringio'
-
-  class PPMTest < Minitest::Test
-    def test_empty_image
-      io = StringIO.new
-      PPM.new(Image.new(0, 0)).output!(io)
-
-      assert_equal io.string, "P3\n0 0\n255\n"
-    end
-
-    def test_small_image
-      io = StringIO.new
-      PPM.new(Image.new(2, 2)).output!(io)
-
-      assert_equal io.string, %{P3
-2 2
-255
-  0   0   0     0   0   0
-  0   0   0     0   0   0
-}
-    end
-  end
-
-
+  main
 end
