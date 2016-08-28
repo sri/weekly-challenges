@@ -16,7 +16,7 @@ class Color
   BLUE  = new(0, 0, 255)
 
   def self.random
-    Color.new(rand(255), rand(255), rand(255))
+    Color.new(rand(256), rand(256), rand(256))
   end
 end
 
