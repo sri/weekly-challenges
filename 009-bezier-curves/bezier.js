@@ -68,3 +68,8 @@ function main() {
     parsePt(3)
   );
 }
+
+function showImage() {
+  var url = canvas.toDataURL("image/png");
+  window.open(url, "_blank");
+}
