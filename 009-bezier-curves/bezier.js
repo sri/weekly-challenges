@@ -2,6 +2,10 @@ var canvas = null;
 var context = null;
 var step = null;
 
+function apply(fn, args) {
+  return fn.apply(null, args);
+}
+
 function draw(p1, p2) {
   context.beginPath();
   console.log("creating line from (" + p1.x + ", " + p1.y + ") to (" +
@@ -11,21 +15,46 @@ function draw(p1, p2) {
   context.stroke();
 }
 
-function bezierCurveFor(t, a, b, c) {
+function cubicBezierCurve(t, a, b, c, d) {
+  var t1 = (1 - t);
+  var result = a*t1*t1*t1 + 3*b*t*t1*t1 + 3*c*t1*t*t + d*t*t*t;
+  return result;
+}
+
+function quadraticBezierCurve(t, a, b, c) {
   var t1 = (1 - t);
   var result = a*t1*t1 + 2*b*t1*t + c*t*t;
   /*   console.log('bezierCurve', result, [t, a, b, c]);*/
   return result;
 }
 
-function bezierCurve(a, b, c) {
-  var cur, last = null;
+function args(nthStep, whichArg, args) {
+  var a = [];
+  for (var i = 0; i < args.length; i++) {
+    a.push(args[i]);
+  }
+  var result = [nthStep].concat(a.map(function(pt) { return pt[whichArg] }));
+  console.log('args', result);
+  return result;
+}
+
+function bezierCurve() {
+  var fn,cur, last = null;
+
+  if (arguments.length === 4) {
+    fn = cubicBezierCurve;
+    console.log('using the cubicBezierCurve algorithm');
+  } else {
+    fn = quadraticBezierCurve;
+    console.log('using the quadraticBezierCurve algorithm');
+  }
 
   for (var i = 0; i < 1; i += step) {
     cur = {
-      x: bezierCurveFor(i, a.x, b.x, c.x),
-      y: bezierCurveFor(i, a.y, b.y, c.y)
+      x: apply(fn, args(i, 'x', arguments)),
+      y: apply(fn, args(i, 'y', arguments))
     };
+    console.log('cur', cur);
 
     if (last !== null) {
       draw(last, cur)
@@ -35,16 +64,19 @@ function bezierCurve(a, b, c) {
   }
 
   cur = {
-    x: bezierCurveFor(1, a.x, b.x, c.x),
-    y: bezierCurveFor(1, a.y, b.y, c.y)
+    x: apply(fn, args(1, 'x', arguments)),
+    y: apply(fn, args(1, 'y', arguments))
   };
   draw(last, cur);
 }
 
 function parsePt(n) {
-  var vals = document.getElementById("pt" + n).value.split(',').map(
+  var val = document.getElementById("pt" + n).value.trim();
+  if (val === "") return null;
+  var vals = val.split(',').map(
     function(x) { return parseInt(x.trim()); }
   );
+  if (vals.length !== 2) return null;
   return {
     x: vals[0],
     y: vals[1]
@@ -62,11 +94,16 @@ function main() {
 
   step = parseFloat(document.getElementById("step").value);
 
-  bezierCurve(
+  var pts = [
     parsePt(1),
     parsePt(2),
     parsePt(3)
-  );
+  ];
+  var pt4 = parsePt(4);
+  if (pt4) pts.push(pt4);
+  console.log('pts', pts);
+
+  apply(bezierCurve, pts);
 }
 
 function showImage() {
