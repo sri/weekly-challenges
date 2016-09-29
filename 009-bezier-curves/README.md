@@ -4,5 +4,3 @@ for the problem statement.
 This implement the Normal Mode + the cubic Bezier Curve.
 ![Screenshot]
 (screenshot.png)
-
-And
